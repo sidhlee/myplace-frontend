@@ -4,7 +4,7 @@ import UsersList from '../components/UsersList';
 const USERS = [
   {
     id: 'u1',
-    name: 'Max',
+    name: 'Jacky',
     image: 'https://placem.at/people?w=1260&h=750',
     places: 3,
   },
