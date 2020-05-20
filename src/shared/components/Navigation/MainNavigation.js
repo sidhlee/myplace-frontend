@@ -20,16 +20,12 @@ const MainNavigation = (props) => {
 
   return (
     <React.Fragment>
-      {isDrawerOpen && (
-        <>
-          <SideDrawer>
-            <nav className="main-navigation__drawer-nav">
-              <NavLinks />
-            </nav>
-          </SideDrawer>
-          <Backdrop handleClick={closeSideDrawer} />
-        </>
-      )}
+      {isDrawerOpen && <Backdrop handleClick={closeSideDrawer} />}
+      <SideDrawer show={isDrawerOpen} handleSideDrawerClick={closeSideDrawer}>
+        <nav className="main-navigation__drawer-nav">
+          <NavLinks />
+        </nav>
+      </SideDrawer>
       <MainHeader
         className={`main-navigation ${props.className}`}
         style={props.style}
