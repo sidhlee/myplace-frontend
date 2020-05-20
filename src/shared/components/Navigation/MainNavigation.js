@@ -10,10 +10,11 @@ import './MainNavigation.css';
 const MainNavigation = (props) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // this is used to handle event generated within this component
   const handleMenuButtonClick = () => {
     setIsDrawerOpen(true);
   };
-
+  // this is passed down to children components
   const closeSideDrawer = () => {
     setIsDrawerOpen(false);
   };
