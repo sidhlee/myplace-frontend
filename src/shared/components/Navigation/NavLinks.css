@@ -6,7 +6,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-items: center;
+  justify-content: center;
   align-items: center;
 }
 
@@ -23,7 +23,7 @@
 
 .nav-links a:hover,
 .nav-links a:active,
-.nav-links a:active {
+.nav-links a.active {
   background: #f8df00;
   border: thin dotted;
   color: #292929;
