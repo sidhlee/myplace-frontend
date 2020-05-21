@@ -24,8 +24,8 @@ const inputReducer = (state, action) => {
 
 const Input = (props) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: props.value || '', // populate the value with props.value. If not provided, default to ''
-    isValid: props.valid || false,
+    value: props.initialValue || '', // initialize value if provided. If not, default to ''
+    isValid: props.initialIsValid || false,
     isTouched: false,
   });
 
@@ -92,7 +92,7 @@ const Input = (props) => {
 Input.propTypes = {
   id: PropTypes.string.isRequired,
   element: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   label: PropTypes.string.isRequired,
   inputChangeCallback: PropTypes.func.isRequired,
   errorText: PropTypes.string.isRequired,
