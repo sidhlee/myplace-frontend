@@ -1,4 +1,4 @@
-# The MERN Fullstack Guid - Frontend
+# MyPlace App - Frontend
 
 Code-along repo for Maximillian Schwarzmuller's Udemy course - The MERN Fullstack Guide
 
