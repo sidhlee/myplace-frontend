@@ -40,7 +40,6 @@ const Input = (props) => {
   }, [id, inputChangeCallback, value, isValid]);
 
   const handleChange = (e) => {
-    console.log(e.target);
     dispatch({
       type: 'CHANGE',
       val: e.target.value,

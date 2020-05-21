@@ -62,8 +62,13 @@ const NewPlace = () => {
     dispatch({ type: 'INPUT_CHANGE', inputId: id, value, isValid });
   }, []); // re-use this function when NewPlace re-renders
 
+  const handlePlaceSubmit = (e) => {
+    e.preventDefault();
+    console.log(formState.inputs); // send this to the backend!
+  };
+
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={handlePlaceSubmit}>
       <Input
         id="title"
         element="input"
@@ -80,6 +85,15 @@ const NewPlace = () => {
         label="Description"
         validators={[VALIDATOR_MINLENGTH(5)]} // this is superset of require
         errorText="Please enter a valid description at least 5 characters"
+        inputChangeCallback={inputChangeCallback}
+      />
+      <Input
+        id="address"
+        element="input"
+        type="text"
+        label="Address"
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="Please enter a valid address"
         inputChangeCallback={inputChangeCallback}
       />
       <Button type="submit" disabled={!formState.isValid}>
