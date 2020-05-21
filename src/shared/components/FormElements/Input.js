@@ -1,4 +1,5 @@
 import React, { useReducer, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import { validate } from '../../util/validators';
 import './Input.css';
@@ -29,7 +30,7 @@ const Input = (props) => {
   });
 
   // destructure props to pass specific prop to dep list
-  const { id, onInput: inputChangeCallback } = props;
+  const { id, inputChangeCallback } = props;
   const { value, isValid } = inputState;
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const Input = (props) => {
   }, [id, inputChangeCallback, value, isValid]);
 
   const handleChange = (e) => {
+    console.log(e.target);
     dispatch({
       type: 'CHANGE',
       val: e.target.value,
@@ -82,6 +84,24 @@ const Input = (props) => {
       {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
     </div>
   );
+};
+
+// Input takes id as required prop to reuse same change handler which will send back
+// the id , value and the validity of the input to update the form state in parent component
+//
+// Without id, it will be hard to know which Input component called the change handler
+Input.propTypes = {
+  id: PropTypes.string.isRequired,
+  element: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  inputChangeCallback: PropTypes.func.isRequired,
+  errorText: PropTypes.string.isRequired,
+  validator: PropTypes.arrayOf(
+    PropTypes.objectOf({ type: PropTypes.string.isRequired })
+  ),
+  placeholder: PropTypes.string,
+  rows: PropTypes.number,
 };
 
 export default Input;
