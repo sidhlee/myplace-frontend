@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { useForm } from '../../shared/hooks/form-hook';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
+import Card from '../../shared/components/UIElements/Card';
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
@@ -26,7 +27,7 @@ const DUMMY_PLACES = [
   },
   {
     id: 'p2',
-    title: 'Youido Park',
+    title: ' Park',
     description: 'Beautiful park surrounded by sky scrapers in Youido, Seoul',
     imageUrl: 'https://placem.at/places?w=1260&h=750&random=2',
     address: '68 Yeouigongwon-ro, Yeoui-dong, Yeongdeungpo-gu, Seoul', // cspell: disable-line
@@ -67,16 +68,19 @@ const UpdatePlace = (props) => {
   // which is passed down to the Input component as initial value
   // but this effect runs AFTER the Input components are rendered
   useEffect(() => {
-    setFormDataCallback({
-      title: {
-        value: identifiedPlace.title,
-        isValid: true,
-      },
-      description: {
-        value: identifiedPlace.description,
-        isValid: true,
-      },
-    });
+    if (identifiedPlace) {
+      // prevent undefined error when user deletes the last place
+      setFormDataCallback({
+        title: {
+          value: identifiedPlace.title,
+          isValid: true,
+        },
+        description: {
+          value: identifiedPlace.description,
+          isValid: true,
+        },
+      });
+    }
     setIsLoading(false);
     // identifiedPlace doesn't change on rerender (as long as the placeId doesn't change)
     // because it points to the same place object inside DUMMY_PLACE
@@ -90,7 +94,9 @@ const UpdatePlace = (props) => {
   if (!identifiedPlace) {
     return (
       <div className="center">
-        <h2>Cannot find the place</h2>
+        <Card>
+          <h2>Cannot find the place</h2>
+        </Card>
       </div>
     );
   }
