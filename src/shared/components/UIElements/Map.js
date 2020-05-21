@@ -5,6 +5,7 @@ import './Map.css';
 const Map = (props) => {
   const mapRef = useRef();
 
+  // Place async operations (fetching data) inside effect
   useEffect(() => {
     // google maps SDK: https://developers.google.com/maps/documentation/javascript/tutorial
     // Render the map inside mapRef.current element.
