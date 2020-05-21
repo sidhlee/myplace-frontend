@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 
 import { validate } from '../../util/validators';
 import './Input.css';
@@ -27,6 +27,16 @@ const Input = (props) => {
     isValid: false,
     isTouched: false,
   });
+
+  // destructure props to pass specific prop to dep list
+  const { id, onInput: inputChangeCallback } = props;
+  const { value, isValid } = inputState;
+
+  useEffect(() => {
+    inputChangeCallback(id, value, isValid);
+
+    // if we pass props here, this might cause infinite loop & render too often
+  }, [id, inputChangeCallback, value, isValid]);
 
   const handleChange = (e) => {
     dispatch({
