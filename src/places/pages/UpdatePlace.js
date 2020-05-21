@@ -8,6 +8,8 @@ import {
   VALIDATOR_MINLENGTH,
 } from '../../shared/util/validators';
 
+import './PlaceForm.css';
+
 const DUMMY_PLACES = [
   {
     id: 'p1',
@@ -52,7 +54,7 @@ const UpdatePlace = (props) => {
   }
 
   return (
-    <form className={`update-place ${props.className}`} style={props.style}>
+    <form className={`place-form`}>
       <Input
         id="title"
         element="input"

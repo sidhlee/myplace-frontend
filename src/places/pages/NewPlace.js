@@ -6,7 +6,7 @@ import {
   VALIDATOR_MINLENGTH,
 } from '../../shared/util/validators';
 
-import './NewPlace.css';
+import './PlaceForm.css';
 // when any of input is changed, re-evaluate the validity of the entire form
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -46,6 +46,10 @@ const NewPlace = () => {
         isValid: false,
       },
       description: {
+        value: '',
+        isValid: false,
+      },
+      address: {
         value: '',
         isValid: false,
       },
