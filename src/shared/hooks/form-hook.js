@@ -26,6 +26,13 @@ const formReducer = (state, action) => {
         },
         isValid: formIsValid,
       };
+    case 'SET_DATA':
+      return {
+        // overwrite existing state
+        // so no spreading
+        inputs: action.inputs,
+        isValid: action.formIsValid,
+      };
     default:
       return state;
   }
@@ -51,5 +58,13 @@ export const useForm = (initialInputs, initialFormValidity) => {
     });
   }, []); // re-use this function when NewPlace re-renders
 
-  return [formState, inputChangeCallback];
+  const setFormDataCallback = useCallback((inputData, formValidity) => {
+    dispatch({
+      type: 'SET_DATA',
+      inputs: inputData,
+      FormIsValid: formValidity,
+    });
+  }, []);
+
+  return [formState, inputChangeCallback, setFormDataCallback];
 };
