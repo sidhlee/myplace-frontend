@@ -29,6 +29,12 @@ const NavLinks = (props) => {
           <NavLink to="/auth">AUTHENTICATE</NavLink>
         </li>
       )}
+      {auth.isLoggedIn && (
+        <li>
+          {/* logout is semantically not a link but a button to initiate an action */}
+          <button onClick={auth.logout}>LOGOUT</button>
+        </li>
+      )}
     </ul>
   );
 };
