@@ -38,6 +38,12 @@ const formReducer = (state, action) => {
   }
 };
 
+/**
+ *
+ * @param {Object} initialInputs initial structure and values of the input
+ * @param {boolean} initialFormValidity
+ * @returns {Array} [ formState, inputChangeCallback, setFormDataCallback ]
+ */
 export const useForm = (initialInputs, initialFormValidity) => {
   const [formState, dispatch] = useReducer(formReducer, {
     inputs: initialInputs,
@@ -58,6 +64,9 @@ export const useForm = (initialInputs, initialFormValidity) => {
     });
   }, []); // re-use this function when NewPlace re-renders
 
+  /**
+   * sets form data (for initial value)
+   */
   const setFormDataCallback = useCallback((inputData, formValidity) => {
     dispatch({
       type: 'SET_DATA',

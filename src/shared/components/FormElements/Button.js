@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 
 import './Button.css';
 
+/**
+ *
+ * @param {{children, size?:string, inverse?:boolean, danger?:boolean, href?:string, to?:string, exact?:boolean, type?:string, disabled?:boolean, handleClick?: Function}} props
+ */
 const Button = (props) => {
   // applying same styling for different kinds of buttons
   const classes = `button button--${props.size || 'default'} ${

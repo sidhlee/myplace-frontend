@@ -22,6 +22,9 @@ const inputReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {{id:string, element: string, type?:string label:string, inputChangeCallback: function, errorText:string, validators?: Array, placeholder?: string, rows?:number}} props
+ */
 const Input = (props) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: props.initialValue || '', // initialize value if provided. If not, default to ''
@@ -89,6 +92,7 @@ const Input = (props) => {
 // the id , value and the validity of the input to update the form state in parent component
 //
 // Without id, it will be hard to know which Input component called the change handler
+
 Input.propTypes = {
   id: PropTypes.string.isRequired,
   element: PropTypes.string.isRequired,
@@ -96,8 +100,10 @@ Input.propTypes = {
   label: PropTypes.string.isRequired,
   inputChangeCallback: PropTypes.func.isRequired,
   errorText: PropTypes.string.isRequired,
-  validator: PropTypes.arrayOf(
-    PropTypes.objectOf({ type: PropTypes.string.isRequired })
+  validators: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    })
   ),
   placeholder: PropTypes.string,
   rows: PropTypes.number,
