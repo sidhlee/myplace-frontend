@@ -26,7 +26,7 @@ const PlaceItem = (props) => {
       {/* map modal */}
       <Modal
         show={isMapShowing}
-        onCloseMap={closeMap}
+        onCancel={closeMap}
         header={props.address}
         contentClass="place-item__modal-content"
         footerClass="place-item__modal-actions"

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 
@@ -36,7 +37,7 @@ const ModalOverlay = (props) => {
 const Modal = (props) => {
   return (
     <div className={`modal ${props.className}`} style={props.style}>
-      {props.show && <Backdrop handleClick={props.onCloseMap} />}
+      {props.show && <Backdrop handleClick={props.onCancel} />}
       <CSSTransition
         in={props.show}
         mountOnEnter
@@ -48,6 +49,20 @@ const Modal = (props) => {
       </CSSTransition>
     </div>
   );
+};
+
+Modal.propTypes = {
+  className: PropTypes.string,
+  style: PropTypes.string,
+  show: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  headerClass: PropTypes.string,
+  header: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  onSubmit: PropTypes.func,
+  contentClass: PropTypes.string,
+  children: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
+  footer: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
 };
 
 export default Modal;

@@ -3,6 +3,8 @@ import React, { useState, useContext } from 'react';
 import Card from '../../shared/components/UIElements/Card';
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_MINLENGTH,
@@ -16,6 +18,8 @@ import './Auth.css';
 const Auth = (props) => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
   const [formState, inputChangeCallback, setFormDataCallback] = useForm(
     {
       email: {
@@ -37,6 +41,10 @@ const Auth = (props) => {
     } else {
       // 'name' field is only available in signup mode
       try {
+        // React will immediately update the UI before sending request since we're inside async function
+        setIsLoading(true);
+
+        // NOTE: no error is thrown for response with error code out of 200 (404, 500)
         const response = await fetch('http://localhost:5000/api/users/signup', {
           method: 'POST',
           headers: {
@@ -51,12 +59,21 @@ const Auth = (props) => {
         // parse json response
         const data = await response.json();
         console.log(data);
+        // turn off loading whether succeed / fail
+        // make sure to clear the local state before you trigger something that might change
+        // loaded component in order to avoid updating unmounted component
+        setIsLoading(false);
+        // only set login context when succeeds
+        auth.login();
       } catch (err) {
         console.log(err);
+        // set isLoading in both cases because if we do that outside try - catch,
+        // this will run after the auth context is set and be redirected
+        setIsLoading(false);
+        // Our backend sends default error message, but this doesn't hurt
+        setError(err.message || 'Something went wrong, please try again');
       }
     }
-
-    auth.login();
   };
 
   const switchMode = () => {
@@ -97,6 +114,7 @@ const Auth = (props) => {
 
   return (
     <Card className="authentication">
+      {isLoading && <LoadingSpinner asOverlay />}
       <h2 className="authentication__header">Login Required</h2>
       <hr />
       <form className={`authentication__form`} onSubmit={handleAuthSubmit}>
