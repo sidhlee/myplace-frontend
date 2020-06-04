@@ -30,7 +30,7 @@ const PlaceItem = (props) => {
         header={props.address}
         contentClass="place-item__modal-content"
         footerClass="place-item__modal-actions"
-        footer={<Button handleClick={closeMap}>CLOSE</Button>}
+        footer={<Button onClick={closeMap}>CLOSE</Button>}
       >
         <div className="map-container">
           <Map center={props.coordinates} zoom={16}></Map>
@@ -44,10 +44,10 @@ const PlaceItem = (props) => {
         footerClass="place-item__modal--actions"
         footer={
           <>
-            <Button inverse handleClick={cancelDelete}>
+            <Button inverse onClick={cancelDelete}>
               CANCEL
             </Button>
-            <Button danger handleClick={confirmDelete}>
+            <Button danger onClick={confirmDelete}>
               DELETE
             </Button>
           </>
@@ -69,14 +69,14 @@ const PlaceItem = (props) => {
             <p>{props.description}</p>
           </div>
           <div className="place-item__actions">
-            <Button inverse handleClick={openMap}>
+            <Button inverse onClick={openMap}>
               VIEW ON MAP
             </Button>
             {auth.isLoggedIn && (
               <Button to={`/places/${props.id}`}>EDIT</Button>
             )}
             {auth.isLoggedIn && (
-              <Button danger handleClick={showDeleteWarning}>
+              <Button danger onClick={showDeleteWarning}>
                 DELETE
               </Button>
             )}

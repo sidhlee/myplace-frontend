@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import './Button.css';
@@ -31,12 +32,24 @@ const Button = (props) => {
     <button
       className={classes}
       type={props.type}
-      onClick={props.handleClick}
+      onClick={props.onClick}
       disabled={props.disabled}
     >
       {props.children}
     </button>
   );
+};
+
+Button.propTypes = {
+  size: PropTypes.string,
+  inverse: PropTypes.bool,
+  danger: PropTypes.bool,
+  href: PropTypes.string,
+  to: PropTypes.string,
+  type: PropTypes.string,
+  onClick: PropTypes.func,
+  disabled: PropTypes.bool,
+  children: PropTypes.node.isRequired,
 };
 
 export default Button;

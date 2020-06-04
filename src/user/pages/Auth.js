@@ -58,6 +58,10 @@ const Auth = (props) => {
         });
         // parse json response
         const data = await response.json();
+        // If out of 200 range
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
         console.log(data);
         // turn off loading whether succeed / fail
         // make sure to clear the local state before you trigger something that might change
@@ -111,50 +115,57 @@ const Auth = (props) => {
     // if you have multiple setState in the same synchronous code block,
     // React will batch them together in one render cycle to prevent unnecessary re-renders
   };
+  // clear error
+  const handleError = () => {
+    setError(null);
+  };
 
   return (
-    <Card className="authentication">
-      {isLoading && <LoadingSpinner asOverlay />}
-      <h2 className="authentication__header">Login Required</h2>
-      <hr />
-      <form className={`authentication__form`} onSubmit={handleAuthSubmit}>
-        {!isLoginMode && (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={handleError} />
+      <Card className="authentication">
+        {isLoading && <LoadingSpinner asOverlay />}
+        <h2 className="authentication__header">Login Required</h2>
+        <hr />
+        <form className={`authentication__form`} onSubmit={handleAuthSubmit}>
+          {!isLoginMode && (
+            <Input
+              element="input"
+              id="name"
+              type="text"
+              label="Your Name"
+              validators={[VALIDATOR_REQUIRE()]}
+              errorText="Please enter a name"
+              inputChangeCallback={inputChangeCallback}
+            />
+          )}
           <Input
             element="input"
-            id="name"
-            type="text"
-            label="Your Name"
-            validators={[VALIDATOR_REQUIRE()]}
-            errorText="Please enter a name"
+            id="email"
+            type="email"
+            label="Email"
+            validators={[VALIDATOR_EMAIL()]}
+            errorText="Please enter a valid email address"
             inputChangeCallback={inputChangeCallback}
           />
-        )}
-        <Input
-          element="input"
-          id="email"
-          type="email"
-          label="Email"
-          validators={[VALIDATOR_EMAIL()]}
-          errorText="Please enter a valid email address"
-          inputChangeCallback={inputChangeCallback}
-        />
-        <Input
-          element="input"
-          id="password"
-          type="password"
-          label="Password"
-          validators={[VALIDATOR_MINLENGTH(6)]}
-          errorText="Please enter a valid email address"
-          inputChangeCallback={inputChangeCallback}
-        />
-        <Button type="submit" disabled={!formState.isValid}>
-          {isLoginMode ? 'LOGIN' : 'SIGNUP'}
+          <Input
+            element="input"
+            id="password"
+            type="password"
+            label="Password"
+            validators={[VALIDATOR_MINLENGTH(6)]}
+            errorText="Please enter a valid email address"
+            inputChangeCallback={inputChangeCallback}
+          />
+          <Button type="submit" disabled={!formState.isValid}>
+            {isLoginMode ? 'LOGIN' : 'SIGNUP'}
+          </Button>
+        </form>
+        <Button inverse onClick={switchMode}>
+          SWITCH TO {isLoginMode ? 'SIGNUP' : 'LOGIN'}
         </Button>
-      </form>
-      <Button inverse handleClick={switchMode}>
-        SWITCH TO {isLoginMode ? 'SIGNUP' : 'LOGIN'}
-      </Button>
-    </Card>
+      </Card>
+    </React.Fragment>
   );
 };
 

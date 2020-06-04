@@ -19,5 +19,7 @@ const ErrorModal = (props) => {
 
 ErrorModal.propTypes = {
   onClear: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
 };
+
+export default ErrorModal;
