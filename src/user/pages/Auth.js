@@ -11,6 +11,7 @@ import {
   VALIDATOR_REQUIRE,
 } from '../../shared/util/validators';
 import { useForm } from '../../shared/hooks/form-hook';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 
 import './Auth.css';
@@ -18,8 +19,8 @@ import './Auth.css';
 const Auth = (props) => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
   const [formState, inputChangeCallback, setFormDataCallback] = useForm(
     {
       email: {
@@ -37,72 +38,49 @@ const Auth = (props) => {
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
 
-    // move setIsLoading out of if block so that we put up the spinner before either login / signup
-    setIsLoading(true);
     if (isLoginMode) {
       try {
         // React will immediately update the UI before sending request since we're inside async function
 
-        // NOTE: no error is thrown for response with error code out of 200 (404, 500)
-        const response = await fetch('http://localhost:5000/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        // we don't really care about the return value here (responseData);
+        await sendRequest(
+          'http://localhost:5000/api/users/login',
+          'POST',
+          JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
           }),
-        });
-        // parse json response
-        const data = await response.json();
-        // If out of 200 range
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
+          { 'Content-Type': 'application/json' }
+        );
 
-        // turn off loading whether succeed / fail
-        // make sure to clear the local state before you trigger something that might change
-        // loaded component in order to avoid updating unmounted component
-        setIsLoading(false);
         // only set login context when succeeds
         auth.login();
       } catch (err) {
         console.log(err);
-        // set isLoading in both cases because if we do that outside try - catch,
-        // this will run after the auth context is set and be redirected
-        setIsLoading(false);
-        // Our backend sends default error message, but this doesn't hurt
-        setError(err.message || 'Something went wrong, please try again');
+        // error is already handled inside useHttpClient hook
+        // we just need catch to break out of the hook
       }
     } else {
       try {
-        // NOTE: no error is thrown for response with error code out of 200 (404, 500)
-        const response = await fetch('http://localhost:5000/api/users/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        await sendRequest(
+          'http://localhost:5000/api/users/signup',
+          'POST',
+          JSON.stringify({
             // 'name' field is only available in signup mode
             name: formState.inputs.name.value,
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
           }),
-        });
-        // parse json response
-        const data = await response.json();
-        // If out of 200 range
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-        setIsLoading(false);
-        // only set login context when succeeds
+          {
+            'Content-Type': 'application/json',
+          }
+        );
+        // only continue to here if we don't have error
         auth.login();
       } catch (err) {
+        // we're just catching the error thrown at the useHttpClient hook
+        // which already handled error and throws to change execution flow
         console.log(err);
-        setIsLoading(false);
-        setError(err.message || 'Something went wrong, please try again');
       }
     }
   };
@@ -142,14 +120,11 @@ const Auth = (props) => {
     // if you have multiple setState in the same synchronous code block,
     // React will batch them together in one render cycle to prevent unnecessary re-renders
   };
-  // clear error
-  const handleError = () => {
-    setError(null);
-  };
+  // replace handleError with clearError returned from useHttpClient
 
   return (
     <React.Fragment>
-      <ErrorModal error={error} onClear={handleError} />
+      <ErrorModal error={error} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
         <h2 className="authentication__header">Login Required</h2>

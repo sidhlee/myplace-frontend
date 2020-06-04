@@ -1,5 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
+/**
+ * @returns {{isLoading: boolean; error: Error; sendRequest: sendRequestCallback, clearError: () => void}}
+ */
 export const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
@@ -9,6 +12,10 @@ export const useHttpClient = () => {
 
   // prevents creating new function when the component using this callback re-renders
   //  ( effect using sendRequest sets state => rerender => new sendRequest => repeat )
+  /**
+   * @function sendRequest Send request while displaying spinner and return response data or handle error
+   * @param {sendRequestCallback} cb - callback that handles request
+   */
   const sendRequest = useCallback(async (
     url,
     method = 'GET',
@@ -30,20 +37,39 @@ export const useHttpClient = () => {
         signal: httpAbortController.signal,
       });
       const responseData = await response.json();
+
+      // Remove abort controller associated with the request after we receive the response
+      activeHttpRequest.current = activeHttpRequest.current.filter(
+        (reqControl) => reqControl !== httpAbortController
+      );
+
       if (!response.ok) {
         throw new Error(responseData.message);
       }
+      setIsLoading(false);
 
       return responseData;
     } catch (err) {
       setError(err);
+      setIsLoading(false);
+      // if error, we need to change the execution flow
+      throw err;
     }
-    setIsLoading(false);
   }, []);
 
   const clearError = () => {
     setError(null);
   };
+
+  /**
+   * @callback sendRequestCallback
+   * @param {string} url
+   * @param {string} [method=GET] 'GET' by default
+   * @param {Object} body request body
+   * @param {Object} [headers={}] request header. {} by default
+   * @type { }
+   * @returns {Object|undefined } responseData | undefined for error
+   */
 
   useEffect(() => {
     // this cleanup fn runs before the useEffect in next render runs
@@ -66,5 +92,10 @@ export const useHttpClient = () => {
     };
   }, []);
 
-  return { isLoading, error, sendRequest, clearError };
+  return {
+    isLoading,
+    error,
+    sendRequest,
+    clearError,
+  };
 };
