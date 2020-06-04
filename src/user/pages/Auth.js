@@ -37,21 +37,19 @@ const Auth = (props) => {
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
 
+    // move setIsLoading out of if block so that we put up the spinner before either login / signup
+    setIsLoading(true);
     if (isLoginMode) {
-    } else {
-      // 'name' field is only available in signup mode
       try {
         // React will immediately update the UI before sending request since we're inside async function
-        setIsLoading(true);
 
         // NOTE: no error is thrown for response with error code out of 200 (404, 500)
-        const response = await fetch('http://localhost:5000/api/users/signup', {
+        const response = await fetch('http://localhost:5000/api/users/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            name: formState.inputs.name.value,
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
           }),
@@ -62,7 +60,7 @@ const Auth = (props) => {
         if (!response.ok) {
           throw new Error(data.message);
         }
-        console.log(data);
+
         // turn off loading whether succeed / fail
         // make sure to clear the local state before you trigger something that might change
         // loaded component in order to avoid updating unmounted component
@@ -75,6 +73,35 @@ const Auth = (props) => {
         // this will run after the auth context is set and be redirected
         setIsLoading(false);
         // Our backend sends default error message, but this doesn't hurt
+        setError(err.message || 'Something went wrong, please try again');
+      }
+    } else {
+      try {
+        // NOTE: no error is thrown for response with error code out of 200 (404, 500)
+        const response = await fetch('http://localhost:5000/api/users/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            // 'name' field is only available in signup mode
+            name: formState.inputs.name.value,
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+        // parse json response
+        const data = await response.json();
+        // If out of 200 range
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+        setIsLoading(false);
+        // only set login context when succeeds
+        auth.login();
+      } catch (err) {
+        console.log(err);
+        setIsLoading(false);
         setError(err.message || 'Something went wrong, please try again');
       }
     }
