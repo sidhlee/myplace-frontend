@@ -41,7 +41,7 @@ const PlaceItem = (props) => {
         show={isConfirmModalShowing}
         onCancel={cancelDelete}
         header="Are you sure?"
-        footerClass="place-item__modal--actions"
+        footerClass="place-item__modal-actions"
         footer={
           <>
             <Button inverse onClick={cancelDelete}>

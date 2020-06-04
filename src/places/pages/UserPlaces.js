@@ -1,39 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useHttpClient } from 'shared/hooks/http-hook';
 
 import PlaceList from '../components/PlaceList';
+import ErrorModal from '../../shared/components/UIElements/ErrorModal';
+import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
-const DUMMY_PLACES = [
-  {
-    id: 'p1',
-    title: 'Youido Park',
-    description: 'Beautiful park surrounded by sky scrapers in Youido, Seoul',
-    imageUrl: 'https://placem.at/places?w=1260&h=750&random=1',
-    address: '68 Yeouigongwon-ro, Yeoui-dong, Yeongdeungpo-gu, Seoul', // cspell: disable-line
-    location: {
-      lat: 37.524482,
-      lng: 126.919066,
-    },
-    creator: 'u1',
-  },
-  {
-    id: 'p2',
-    title: ' Park',
-    description: 'Beautiful park surrounded by sky scrapers in Youido, Seoul',
-    imageUrl: 'https://placem.at/places?w=1260&h=750&random=2',
-    address: '68 Yeouigongwon-ro, Yeoui-dong, Yeongdeungpo-gu, Seoul', // cspell: disable-line
-    location: {
-      lat: 37.524482,
-      lng: 126.919066,
-    },
-    creator: 'u2',
-  },
-];
 const UserPlaces = (props) => {
-  const userId = useParams().userId;
-  const loadedPlaces = DUMMY_PLACES.filter((place) => place.creator === userId);
+  const [loadedPlaces, setLoadedPlaces] = useState([]);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  return <PlaceList items={loadedPlaces} />;
+  const userId = useParams().userId;
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/places/user/${userId}`
+        );
+
+        /*
+          The backend sends this response:
+          return res.json({
+            places: userWithPlaces.places.map((place) =>
+            place.toObject({ getters: true })
+            ),
+          });
+        */
+        setLoadedPlaces(responseData.places);
+      } catch (err) {}
+    };
+    fetchPlaces();
+    // userId won't change as long as we're on the same page with the same logged in user
+  }, [sendRequest, userId]);
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner asOverlay />
+        </div>
+      )}
+      {!isLoading && loadedPlaces && <PlaceList items={loadedPlaces} />}
+    </React.Fragment>
+  );
 };
 
 export default UserPlaces;
