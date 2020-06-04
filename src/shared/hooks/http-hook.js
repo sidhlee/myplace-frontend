@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 /**
+ * Send request while displaying spinner and return response data or handle error
  * @returns {{isLoading: boolean; error: Error; sendRequest: sendRequestCallback, clearError: () => void}}
  */
 export const useHttpClient = () => {
@@ -13,7 +14,6 @@ export const useHttpClient = () => {
   // prevents creating new function when the component using this callback re-renders
   //  ( effect using sendRequest sets state => rerender => new sendRequest => repeat )
   /**
-   * @function sendRequest Send request while displaying spinner and return response data or handle error
    * @param {sendRequestCallback} cb - callback that handles request
    */
   const sendRequest = useCallback(async (
@@ -67,7 +67,6 @@ export const useHttpClient = () => {
    * @param {string} [method=GET] 'GET' by default
    * @param {Object} body request body
    * @param {Object} [headers={}] request header. {} by default
-   * @type { }
    * @returns {Object|undefined } responseData | undefined for error
    */
 

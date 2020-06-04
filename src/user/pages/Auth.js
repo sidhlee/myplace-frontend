@@ -42,8 +42,8 @@ const Auth = (props) => {
       try {
         // React will immediately update the UI before sending request since we're inside async function
 
-        // we don't really care about the return value here (responseData);
-        await sendRequest(
+        // let's get the userId from the login/ signup responseData
+        const responseData = await sendRequest(
           'http://localhost:5000/api/users/login',
           'POST',
           JSON.stringify({
@@ -53,8 +53,10 @@ const Auth = (props) => {
           { 'Content-Type': 'application/json' }
         );
 
-        // only set login context when succeeds
-        auth.login();
+        // server sends this response:
+        // return res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+        // pass id info so that we can update userId in context
+        auth.login(responseData.user.id); // we can access stringified _id at .id (getter)
       } catch (err) {
         console.log(err);
         // error is already handled inside useHttpClient hook
@@ -62,7 +64,7 @@ const Auth = (props) => {
       }
     } else {
       try {
-        await sendRequest(
+        const responseData = await sendRequest(
           'http://localhost:5000/api/users/signup',
           'POST',
           JSON.stringify({
@@ -76,7 +78,7 @@ const Auth = (props) => {
           }
         );
         // only continue to here if we don't have error
-        auth.login();
+        auth.login(responseData.user.id);
       } catch (err) {
         // we're just catching the error thrown at the useHttpClient hook
         // which already handled error and throws to change execution flow
