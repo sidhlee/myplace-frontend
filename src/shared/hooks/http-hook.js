@@ -50,7 +50,7 @@ export const useHttpClient = () => {
 
       return responseData;
     } catch (err) {
-      setError(err);
+      setError(err.message);
       setIsLoading(false);
       // if error, we need to change the execution flow
       throw err;
