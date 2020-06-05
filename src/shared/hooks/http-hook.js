@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 /**
- * Send request while displaying spinner and return response data or handle error
+ * Returns functions and state for making request and handle error
  * @returns {{isLoading: boolean; error: Error; sendRequest: sendRequestCallback, clearError: () => void}}
  */
 export const useHttpClient = () => {

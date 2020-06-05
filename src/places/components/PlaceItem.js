@@ -1,28 +1,46 @@
 import React, { useState, useContext } from 'react';
-
+import PropTypes from 'prop-types';
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
 import Modal from '../../shared/components/UIElements/Modal';
 import Map from '../../shared/components/UIElements/Map';
 import { AuthContext } from '../../shared/context/auth-context';
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import './PlaceItem.css';
+import ErrorModal from 'shared/components/UIElements/ErrorModal';
+import LoadingSpinner from 'shared/components/UIElements/LoadingSpinner';
 
 const PlaceItem = (props) => {
+  const { sendRequest, isLoading, error, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   const [isMapShowing, setMapShowing] = useState(false);
   const [isConfirmModalShowing, setConfirmModalShowing] = useState(false);
 
   const openMap = () => setMapShowing(true);
+
   const closeMap = () => setMapShowing(false);
+
   const showDeleteWarning = () => setConfirmModalShowing(true);
+
   const cancelDelete = () => setConfirmModalShowing(false);
-  const confirmDelete = () => {
+
+  const confirmDelete = async () => {
+    // You need to close the confirm modal before sending request so that
+    // when error modal opens up there won't be two modals opened up at the same time
     setConfirmModalShowing(false);
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/places/${props.id}`,
+        'DELETE'
+      );
+    } catch (err) {}
+    props.onDelete(props.id);
     console.log('deleting...');
   };
 
   return (
     <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
       {/* map modal */}
       <Modal
         show={isMapShowing}
@@ -58,8 +76,12 @@ const PlaceItem = (props) => {
           action.
         </p>
       </Modal>
+      {/* Main place card */}
       <li className={`place-item ${props.className}`} style={props.style}>
         <Card className="place-item__content">
+          {/* Confirm modal is closed when clicked on either cancel/delete */}
+          {/* Therefore the spinner is going to be on the item that's being deleted */}
+          {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
             <img src={props.image} alt={props.title} />
           </div>
@@ -85,6 +107,19 @@ const PlaceItem = (props) => {
       </li>
     </React.Fragment>
   );
+};
+
+PlaceItem.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
+  creatorId: PropTypes.string.isRequired,
+  coordinates: PropTypes.shape({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+  }).isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default PlaceItem;

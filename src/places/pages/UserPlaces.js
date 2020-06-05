@@ -34,6 +34,16 @@ const UserPlaces = (props) => {
     // userId won't change as long as we're on the same page with the same logged in user
   }, [sendRequest, userId]);
 
+  /**
+   * Update UI when place is deleted
+   * @param {string} deletedPlaceId
+   */
+  const handlePlaceDelete = (deletedPlaceId) => {
+    setLoadedPlaces((prevPlaces) =>
+      prevPlaces.filter((place) => place.id !== deletedPlaceId)
+    );
+  };
+
   return (
     <React.Fragment>
       <ErrorModal error={error} onClear={clearError} />
@@ -42,7 +52,9 @@ const UserPlaces = (props) => {
           <LoadingSpinner asOverlay />
         </div>
       )}
-      {!isLoading && loadedPlaces && <PlaceList items={loadedPlaces} />}
+      {!isLoading && loadedPlaces && (
+        <PlaceList items={loadedPlaces} onDeletePlace={handlePlaceDelete} />
+      )}
     </React.Fragment>
   );
 };
