@@ -94,10 +94,10 @@ const PlaceItem = (props) => {
             <Button inverse onClick={openMap}>
               VIEW ON MAP
             </Button>
-            {auth.isLoggedIn && (
+            {auth.userId === props.creatorId && (
               <Button to={`/places/${props.id}`}>EDIT</Button>
             )}
-            {auth.isLoggedIn && (
+            {auth.userId === props.creatorId && (
               <Button danger onClick={showDeleteWarning}>
                 DELETE
               </Button>
@@ -114,11 +114,13 @@ PlaceItem.propTypes = {
   description: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  creatorId: PropTypes.string.isRequired,
   coordinates: PropTypes.shape({
     lat: PropTypes.number.isRequired,
     lng: PropTypes.number.isRequired,
   }).isRequired,
+  // id of the user who created this place
+  creatorId: PropTypes.string.isRequired,
+  // id of this place item
   id: PropTypes.string.isRequired,
 };
 
