@@ -21,6 +21,7 @@ const ImageUpload = (props) => {
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result); // parsed result is available at .result
     };
+    // In order to render image, you need to pass the url to the data
     fileReader.readAsDataURL(file);
   }, [file]);
 
@@ -29,7 +30,7 @@ const ImageUpload = (props) => {
     let fileIsValid = isValid;
     // only handle when user picked one file
     if (e.target.files && e.target.files.length === 1) {
-      // extract picked file
+      // extract picked file available at e.target.files
       pickedFile = e.target.files[0];
       setFile(pickedFile);
       setIsValid(true); // will be set to true in the next render

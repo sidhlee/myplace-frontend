@@ -43,9 +43,8 @@ const Auth = (props) => {
 
     if (isLoginMode) {
       try {
-        // React will immediately update the UI before sending request since we're inside async function
-
         // let's get the userId from the login/ signup responseData
+        // React will immediately update the UI before sending request since we're inside async function
         const responseData = await sendRequest(
           'http://localhost:5000/api/users/login',
           'POST',
@@ -67,18 +66,19 @@ const Auth = (props) => {
       }
     } else {
       try {
+        // FormData: Browser API for creating a form data that can be attached to the request
+        const formData = new FormData();
+        // You can add text or binary data to formData
+        formData.append('name', formState.inputs.name.value);
+        formData.append('email', formState.inputs.email.value);
+        formData.append('password', formState.inputs.password.value);
+        formData.append('image', formState.inputs.image.value);
+
         const responseData = await sendRequest(
           'http://localhost:5000/api/users/signup',
           'POST',
-          JSON.stringify({
-            // 'name' field is only available in signup mode
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-          {
-            'Content-Type': 'application/json',
-          }
+          formData
+          // fetch API automatically adds appropriate headers when given a formData
         );
         // only continue to here if we don't have error
         auth.login(responseData.user.id);
@@ -152,6 +152,9 @@ const Auth = (props) => {
             />
           )}
           {!isLoginMode && (
+            // Add ImageUpload component only in signup mode
+            // and pass inputChangeCallback to store image(binary data) value in local state
+            // and validate the form on image input change
             <ImageUpload id="image" center onInput={inputChangeCallback} />
           )}
           <Input
