@@ -155,7 +155,12 @@ const Auth = (props) => {
             // Add ImageUpload component only in signup mode
             // and pass inputChangeCallback to store image(binary data) value in local state
             // and validate the form on image input change
-            <ImageUpload id="image" center onInput={inputChangeCallback} />
+            <ImageUpload
+              id="image"
+              center
+              onInput={inputChangeCallback}
+              errorText="Please provide an image."
+            />
           )}
           <Input
             element="input"

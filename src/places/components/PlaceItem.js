@@ -83,7 +83,10 @@ const PlaceItem = (props) => {
           {/* Therefore the spinner is going to be on the item that's being deleted */}
           {isLoading && <LoadingSpinner asOverlay />}
           <div className="place-item__image">
-            <img src={props.image} alt={props.title} />
+            <img
+              src={`http://localhost:5000/${props.image}`}
+              alt={props.title}
+            />
           </div>
           <div className="place-item__info">
             <h2>{props.title}</h2>
