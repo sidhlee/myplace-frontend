@@ -39,6 +39,8 @@ const Auth = (props) => {
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(formState.inputs);
+
     if (isLoginMode) {
       try {
         // React will immediately update the UI before sending request since we're inside async function
@@ -102,6 +104,7 @@ const Auth = (props) => {
         {
           ...formState.inputs,
           name: undefined, // drop the name field from signup mode
+          image: undefined,
         },
         isLoginFormValid
       );
@@ -113,6 +116,10 @@ const Auth = (props) => {
           // add name field
           name: {
             value: '',
+            isValid: false,
+          },
+          image: {
+            value: null,
             isValid: false,
           },
         },
@@ -144,7 +151,9 @@ const Auth = (props) => {
               inputChangeCallback={inputChangeCallback}
             />
           )}
-          {!isLoginMode && <ImageUpload id="image" center />}
+          {!isLoginMode && (
+            <ImageUpload id="image" center onInput={inputChangeCallback} />
+          )}
           <Input
             element="input"
             id="email"
