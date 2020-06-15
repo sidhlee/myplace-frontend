@@ -58,7 +58,7 @@ const Auth = (props) => {
         // server sends this response:
         // return res.status(201).json({ user: createdUser.toObject({ getters: true }) });
         // pass id info so that we can update userId in context
-        auth.login(responseData.user.id); // we can access stringified _id at .id (getter)
+        auth.login(responseData.userId, responseData.token);
       } catch (err) {
         console.log(err);
         // error is already handled inside useHttpClient hook
@@ -81,7 +81,7 @@ const Auth = (props) => {
           // fetch API automatically adds appropriate headers when given a formData
         );
         // only continue to here if we don't have error
-        auth.login(responseData.user.id);
+        auth.login(responseData.userId, responseData.token);
       } catch (err) {
         // we're just catching the error thrown at the useHttpClient hook
         // which already handled error and throws to change execution flow

@@ -56,8 +56,8 @@ const NewPlace = () => {
       await sendRequest(
         'http://localhost:5000/api/places',
         'POST',
-        formData
-        // fetch API sets the header automatically if formData is provided
+        formData,
+        { Authorization: `Bearer ${auth.token}` } // header
       );
       // A new place is created in the backend with transaction.
       // In transaction, the collection must exist before you create a document in it.

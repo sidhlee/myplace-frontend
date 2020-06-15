@@ -14,7 +14,7 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 import { AuthContext } from './shared/context/auth-context';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
 
   // useCallback to prevent infinite loop from consuming component that runs login function
@@ -22,19 +22,19 @@ const App = () => {
   // 2. App's isLoggedIn local state changes
   // 3. App re-renders => new login function created
   // 4. consuming component runs login in effect
-  const login = useCallback((uid) => {
-    setIsLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    setToken(token);
     setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
+    setToken(null);
     setUserId(null);
   }, []);
 
   let routes;
 
-  if (isLoggedIn) {
+  if (token) {
     // you have to nest each set of routes inside Switch
     // if you use Fragment to wrap routes here and then pass it into the Switch,
     // Switch does not work (bug?)
@@ -76,7 +76,8 @@ const App = () => {
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
+        isLoggedIn: !!token, // quick convenience property to check login state
+        token, // we'll need this token when making request to certain routes
         userId: userId,
         login: login,
         logout: logout,
