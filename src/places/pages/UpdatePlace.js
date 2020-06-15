@@ -18,7 +18,7 @@ import ErrorModal from 'shared/components/UIElements/ErrorModal';
 // import './UpdatePlace.css';
 
 const UpdatePlace = (props) => {
-  const { userId } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [loadedPlace, setLoadedPlace] = useState();
 
@@ -75,11 +75,12 @@ const UpdatePlace = (props) => {
         {
           // need to set Content-Type for body-parser on backend
           'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + auth.token,
         }
       );
       // we want to redirect users to the user's places page
       // for that, we need to get userId from the context
-      history.push(`/${userId}/places`);
+      history.push(`/${auth.userId}/places`);
     } catch (err) {}
     console.log(formState.inputs);
   };
