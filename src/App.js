@@ -24,6 +24,10 @@ const App = () => {
   // 4. consuming component runs login in effect
   const login = useCallback((uid, token) => {
     setToken(token);
+    localStorage.setItem(
+      'userData',
+      JSON.stringify({ userId: uid, token: token })
+    );
     setUserId(uid);
   }, []);
 
