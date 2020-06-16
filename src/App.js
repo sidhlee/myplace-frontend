@@ -22,13 +22,20 @@ const App = () => {
   // 2. App's isLoggedIn local state changes
   // 3. App re-renders => new login function created
   // 4. consuming component runs login in effect
-  const login = useCallback((uid, token) => {
+  const login = useCallback((uid, token, expirationDate) => {
     setToken(token);
+    setUserId(uid);
+    const tokenExpirationDate =
+      expirationDate || new Date(new Date().getTime() + 1000 * 3600);
     localStorage.setItem(
       'userData',
-      JSON.stringify({ userId: uid, token: token })
+      JSON.stringify({
+        userId: uid,
+        token: token,
+        // ensure that no date info is lost when stringified
+        expiration: tokenExpirationDate.toISOString(),
+      })
     );
-    setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
@@ -39,8 +46,14 @@ const App = () => {
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem('userData'));
-    if (storedData && storedData.token) {
-      login(storedData.userId, storedData.token);
+    // storedDate.expiration is stringified.
+    const isExpired = new Date(storedData.expiration) < new Date();
+    if (storedData && storedData.token && !isExpired) {
+      login(
+        storedData.userId,
+        storedData.token,
+        new Date(storedData.expiration)
+      );
     }
   }, [login]); // login never changes (useCallback) => only runs on mount
   let routes;
