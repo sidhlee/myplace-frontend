@@ -48,7 +48,9 @@ const NewPlace = () => {
       formData.append('title', formState.inputs.title.value);
       formData.append('description', formState.inputs.description.value);
       formData.append('address', formState.inputs.address.value);
-      formData.append('creator', auth.userId);
+      // We no longer need to send userId with formData
+      // because we are extracting it from the token
+      // formData.append('creator', auth.userId);
       formData.append('image', formState.inputs.image.value);
 
       // The server expects the following data
