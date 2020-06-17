@@ -46,7 +46,7 @@ const Auth = (props) => {
         // let's get the userId from the login/ signup responseData
         // React will immediately update the UI before sending request since we're inside async function
         const responseData = await sendRequest(
-          'http://localhost:5000/api/users/login',
+          `${process.env.REACT_APP_BACKEND_URL}/users/login`,
           'POST',
           JSON.stringify({
             email: formState.inputs.email.value,
@@ -75,7 +75,7 @@ const Auth = (props) => {
         formData.append('image', formState.inputs.image.value);
 
         const responseData = await sendRequest(
-          'http://localhost:5000/api/users/signup',
+          `${process.env.REACT_APP_BACKEND_URL}/users/signup`,
           'POST',
           formData
           // fetch API automatically adds appropriate headers when given a formData
